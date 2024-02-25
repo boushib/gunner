@@ -1,13 +1,6 @@
 # Gunner Game
 
-Gunner Game is JavaScript Game.
-
-## Dependencies
-
-- Vite
-- Prettier
-- TypeScrip
-- Node.js
+Gunner Game written in TypeScript.
 
 ## Dev Environment
 
