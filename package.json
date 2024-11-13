@@ -1,7 +1,7 @@
 {
-  "name": "gunner-game",
+  "name": "gunner",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^4.6.4",
-    "vite": "^3.1.0"
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
   },
   "dependencies": {
     "gsap": "^3.11.1",

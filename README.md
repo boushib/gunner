@@ -1,17 +1,17 @@
-# Gunner Game
+# Gunner
 
-Gunner Game written in TypeScript.
+Gunner is a gunner game written in TypeScript.
 
 ## Dev Environment
 
 Run the app in development mode.
 
 ```text
-yarn dev
+pnpm run dev
 ```
 
 Builds the app for production
 
 ```text
-yarn build
+pnpm run build
 ```
