@@ -192,7 +192,7 @@ let animationId = 0
 
 const animate = () => {
   animationId = requestAnimationFrame(animate)
-  ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
+  ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
   ctx.fillRect(0, 0, canvas.width, canvas.height)
   player.draw()
   projectiles.forEach((p, i) => {
