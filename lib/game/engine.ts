@@ -437,9 +437,11 @@ export class Engine {
     }
     const level = this.mode === "blitz" ? 1 + this.stats.seconds / 30 : this.wave
     const speedUp = (1 + Math.min(level, 25) * 0.035) * (this.mode === "hardcore" ? 1.25 : 1)
+    // Phones have less room to react, so enemies there fly slower
+    const room = Math.min(1, Math.max(0.6, Math.min(this.w, this.h) / 720))
     const hp = kind === "boss" ? def.hp + this.wave * 6 : def.hp
     const r = kind === "drone" ? def.radius * rand(0.8, 1.2) : def.radius
-    this.enemies.push({ id: this.nextId++, kind, x, y, r, baseR: r, hp, maxHp: hp, speed: def.speed * speedUp * rand(0.9, 1.1), kx: 0, ky: 0, phase: Math.random() * 6, flash: 0, timer: 2, age: 0 })
+    this.enemies.push({ id: this.nextId++, kind, x, y, r, baseR: r, hp, maxHp: hp, speed: def.speed * speedUp * room * rand(0.9, 1.1), kx: 0, ky: 0, phase: Math.random() * 6, flash: 0, timer: 2, age: 0 })
   }
 
   // ---------- Combat ----------

@@ -52,6 +52,8 @@
   margin-bottom: 16px
 
   button
+    flex: 0 1 auto
+    min-width: 0
     padding: 9px 16px
     border: 1px solid var(--line)
     border-radius: 10px
@@ -310,6 +312,10 @@
     gap: 8px
 
 @media (max-width: 520px)
+  .tabs button
+    flex: 1
+    padding-inline: 8px
+
   .row
     flex-wrap: wrap
 
