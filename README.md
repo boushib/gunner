@@ -15,7 +15,7 @@ Built with Next.js, TypeScript and a hand-written canvas engine. No backend: sco
 ### The game
 - **Three modes:** Classic (endless waves, three lives, a boss every fifth wave), Blitz (90 seconds of nonstop enemies) and Hardcore (one life, faster enemies, double points)
 - **Six enemies:** drones, fast runners, zigzagging weavers, splitters that burst into runners, tough brutes that shrink as you hit them, and the Mothership boss, which circles you and launches drones
-- **Gun upgrades:** every kill fills your gun bar, and a full bar upgrades your gun for the rest of the game, through six levels from the Pea shooter to the five-way Storm cannon. Getting hit knocks it down a level
+- **Gun upgrades:** every kill fills your gun bar, and a full bar upgrades your gun for the rest of the game, through six real-looking guns, from a pistol to a minigun, held by your gunner (drawn from above). Getting hit knocks it down a level
 - **Seven power-ups**, dropped by enemies and collected by shooting them: rapid fire, spread shot, piercing rounds, slow time, shield, nuke and extra life
 - **Scoring** with combos (up to ×5), wave-clear bonuses and perfect-wave bonuses
 - Hit effects: particles, screen shake, shockwaves that push enemies back, and floating points

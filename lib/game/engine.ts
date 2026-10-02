@@ -1,5 +1,6 @@
 import { BLITZ_SECONDS, COLORS, ENEMIES, GUNS, MAX_LIVES, MODES, POWERS, TIMED, type EnemyKind, type Mode, type PowerKind } from "./config"
 import { draw } from "./draw"
+import { GUN_SCALE, MUZZLE } from "./guns"
 
 export type Enemy = {
   id: number
@@ -131,6 +132,10 @@ export class Engine {
   shield = false
   gunLevel = 1
   gunXp = 0
+  /** Seconds since the last shot is under this: drives recoil and the muzzle flash */
+  muzzle = 0
+  /** How far the minigun's barrels have turned */
+  spin = 0
   invuln = 0
   shake = 0
   banner: { text: string; life: number } | null = null
@@ -277,6 +282,8 @@ export class Engine {
     if (!this.over) this.stats.seconds += real
     this.shake = Math.max(0, this.shake - real * 30)
     this.invuln = Math.max(0, this.invuln - real)
+    this.muzzle = Math.max(0, this.muzzle - real)
+    if (this.firing && !this.over) this.spin += real * 18
     if (this.banner && (this.banner.life -= real) <= 0) this.banner = null
     for (const k of TIMED) if (this.powers[k] !== undefined && (this.powers[k]! -= real) <= 0) delete this.powers[k]
     if (this.combo && (this.comboTimer -= real) <= 0) this.combo = 0
@@ -480,12 +487,14 @@ export class Engine {
     const base = Math.atan2(this.aim.y, this.aim.x)
     const c = this.center
     let fired = 0
+    this.muzzle = 0.06
     for (const off of angles) {
       const a = base + off
       for (const side of gun.offsets) {
         const sx = -Math.sin(base) * side
         const sy = Math.cos(base) * side
-        this.bullets.push({ x: c.x + sx + Math.cos(a) * (PLAYER_R + 12), y: c.y + sy + Math.sin(a) * (PLAYER_R + 12), vx: Math.cos(a) * BULLET_SPEED, vy: Math.sin(a) * BULLET_SPEED, r: gun.size, damage: gun.damage, pierce: !!this.powers.pierce, hit: new Set() })
+        const out = MUZZLE[this.gunLevel - 1] * GUN_SCALE
+        this.bullets.push({ x: c.x + sx + Math.cos(a) * out, y: c.y + sy + Math.sin(a) * out, vx: Math.cos(a) * BULLET_SPEED, vy: Math.sin(a) * BULLET_SPEED, r: gun.size, damage: gun.damage, pierce: !!this.powers.pierce, hit: new Set() })
         fired++
       }
     }

@@ -62,7 +62,7 @@ export type Gun = {
   rate: number
   /** Angles of each bullet, in radians from where you aim */
   spread: number[]
-  /** Side-by-side barrels, in px from the middle (for twin guns) */
+  /** Side-by-side barrels, in px from the middle (for the double barrel) */
   offsets: number[]
   damage: number
   /** Bullet radius */
@@ -73,10 +73,10 @@ export type Gun = {
 
 /** Your gun levels up as you destroy enemies, and drops a level when you're hit */
 export const GUNS: Gun[] = [
-  { name: "Pea shooter", rate: 5, spread: [0], offsets: [0], damage: 1, size: 4, next: 8 },
-  { name: "Repeater", rate: 7, spread: [0], offsets: [0], damage: 1, size: 4, next: 14 },
-  { name: "Twin cannon", rate: 7, spread: [0], offsets: [-6, 6], damage: 1, size: 4, next: 20 },
-  { name: "Tri-blaster", rate: 8, spread: [-0.12, 0, 0.12], offsets: [0], damage: 1, size: 4.5, next: 28 },
-  { name: "Heavy tri-blaster", rate: 8, spread: [-0.12, 0, 0.12], offsets: [0], damage: 2, size: 5.5, next: 36 },
-  { name: "Storm cannon", rate: 9, spread: [-0.22, -0.11, 0, 0.11, 0.22], offsets: [0], damage: 2, size: 5.5, next: Infinity },
+  { name: "Pistol", rate: 5, spread: [0], offsets: [0], damage: 1, size: 4, next: 8 },
+  { name: "SMG", rate: 7, spread: [0], offsets: [0], damage: 1, size: 4, next: 14 },
+  { name: "Double barrel", rate: 7, spread: [0], offsets: [-3, 3], damage: 1, size: 4, next: 20 },
+  { name: "Assault rifle", rate: 8, spread: [-0.12, 0, 0.12], offsets: [0], damage: 1, size: 4.5, next: 28 },
+  { name: "Machine gun", rate: 8, spread: [-0.12, 0, 0.12], offsets: [0], damage: 2, size: 5.5, next: 36 },
+  { name: "Minigun", rate: 9, spread: [-0.22, -0.11, 0, 0.11, 0.22], offsets: [0], damage: 2, size: 5.5, next: Infinity },
 ]

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import GunPreview from "@/components/site/GunPreview"
 import { EnemyIcon, PowerIcon } from "@/components/site/Icons"
 import { ENEMIES, GUNS, MODES, POWERS, type EnemyKind, type Mode, type PowerKind } from "@/lib/game/config"
 import site from "@/components/site/Site.module.sass"
@@ -60,6 +61,7 @@ export default function HowToPlay() {
         <ol className={styles.guns}>
           {GUNS.map((g, i) => (
             <li key={g.name}>
+              <GunPreview level={i + 1} />
               <span className={styles.level}>Lv {i + 1}</span>
               <strong>{g.name}</strong>
               <span>

@@ -1,5 +1,6 @@
 import { COLORS, ENEMIES, POWERS } from "./config"
 import type { Engine, Enemy } from "./engine"
+import { drawGunner, GUN_SCALE } from "./guns"
 
 const TAU = Math.PI * 2
 
@@ -149,27 +150,11 @@ export const draw = (ctx: CanvasRenderingContext2D, g: Engine) => {
     ctx.save()
     ctx.translate(c.x, c.y)
     ctx.rotate(a)
-    // One barrel per bullet direction, wider for heavier rounds
-    const gun = g.gun
-    ctx.fillStyle = COLORS.player
-    const width = gun.damage > 1 ? 12 : 10
-    for (const off of gun.spread.length > 1 ? gun.spread : [0]) {
-      for (const side of gun.offsets) {
-        ctx.save()
-        ctx.rotate(off)
-        ctx.beginPath()
-        ctx.roundRect(8, side - width / 2, gun.spread.length > 3 ? 24 : 28, width, 4)
-        ctx.fill()
-        ctx.restore()
-      }
-    }
+    ctx.scale(GUN_SCALE, GUN_SCALE)
+    // Kicks back a little with every shot
+    ctx.translate(-(g.muzzle / 0.06) * 3, 0)
+    drawGunner(ctx, g.gunLevel, { spin: g.spin, firing: g.muzzle > 0.03 })
     ctx.restore()
-    ctx.fillStyle = COLORS.player
-    circle(ctx, c.x, c.y, 20)
-    ctx.fill()
-    ctx.fillStyle = COLORS.bg
-    circle(ctx, c.x, c.y, 7)
-    ctx.fill()
     if (g.shield) {
       ctx.strokeStyle = COLORS.shield
       ctx.lineWidth = 3
