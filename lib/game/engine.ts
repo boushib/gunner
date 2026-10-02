@@ -66,6 +66,8 @@ type Options = {
   settings: Settings
   /** The attract-mode demo on the home page: aims and fires by itself and never dies */
   autopilot?: boolean
+  /** Where the turret sits across the canvas, 0 to 1 (the middle by default) */
+  anchor?: number
   onHud?: (hud: Hud) => void
   onEnd?: (stats: RunStats) => void
   onSound?: (sound: Sound) => void
@@ -196,7 +198,7 @@ export class Engine {
   }
 
   get center() {
-    return { x: this.w / 2, y: this.h / 2 }
+    return { x: this.w * (this.opts.anchor ?? 0.5), y: this.h / 2 }
   }
 
   // ---------- Input ----------
@@ -370,6 +372,8 @@ export class Engine {
 
   private nextWave() {
     this.wave++
+    // The demo loops through the early waves instead of getting ever more crowded
+    if (this.opts.autopilot && this.wave > 8) this.wave = 3
     this.stats.wave = this.wave
     const boss = this.wave % 5 === 0
     this.toSpawn = boss ? 4 + this.wave : 6 + this.wave * 3
@@ -426,7 +430,8 @@ export class Engine {
     const c = this.center
     if (x === undefined || y === undefined) {
       const a = Math.random() * Math.PI * 2
-      const d = Math.hypot(this.w, this.h) / 2 + def.radius + 10
+      // Just past the farthest corner, so nothing appears on screen
+      const d = Math.hypot(Math.max(c.x, this.w - c.x), Math.max(c.y, this.h - c.y)) + def.radius + 10
       x = c.x + Math.cos(a) * d
       y = c.y + Math.sin(a) * d
     }
