@@ -155,7 +155,7 @@ export class Engine {
     this.opts = opts
     this.mode = opts.mode
     this.settings = opts.settings
-    this.font = getComputedStyle(canvas).fontFamily || "monospace"
+    this.font = getComputedStyle(canvas).fontFamily || "sans-serif"
     this.lives = opts.autopilot ? Infinity : MODES[opts.mode].lives
     this.timeLeft = opts.mode === "blitz" && !opts.autopilot ? BLITZ_SECONDS : null
     this.stats = {
@@ -176,6 +176,14 @@ export class Engine {
     this.listen()
     if (this.mode === "blitz") this.toSpawn = Infinity
     else this.nextWave()
+    // The demo starts mid-fight instead of on an empty screen
+    if (opts.autopilot) {
+      for (let i = 0; i < 6; i++) {
+        const a = Math.random() * Math.PI * 2
+        const d = this.edgeDistance(a) * rand(0.45, 0.95)
+        this.addEnemy(pick(waveMix(3)), this.center.x + Math.cos(a) * d, this.center.y + Math.sin(a) * d)
+      }
+    }
   }
 
   start() {
@@ -285,7 +293,7 @@ export class Engine {
     this.cooldown -= real
     if (this.firing && !this.over && this.cooldown <= 0) {
       this.fire()
-      this.cooldown = 1 / (this.powers.rapid ? RAPID_RATE : FIRE_RATE) / (this.opts.autopilot ? 1.6 : 1)
+      this.cooldown = 1 / (this.powers.rapid ? RAPID_RATE : FIRE_RATE) / (this.opts.autopilot ? 2.4 : 1)
     }
 
     this.spawn(real)
@@ -398,13 +406,15 @@ export class Engine {
       }
       return
     }
-    if (this.breakTimer > 0) {
+    // The demo skips the breaks and keeps the screen busy
+    const demo = !!this.opts.autopilot
+    if (this.breakTimer > 0 && !demo) {
       this.breakTimer -= dt
       return
     }
     if (this.toSpawn > 0) {
       if ((this.spawnTimer -= dt) <= 0) {
-        this.spawnTimer = Math.max(0.3, 1.15 - this.wave * 0.06) * rand(0.6, 1.3)
+        this.spawnTimer = demo ? (this.enemies.length < 7 ? 0.15 : 0.5) : Math.max(0.3, 1.15 - this.wave * 0.06) * rand(0.6, 1.3)
         this.toSpawn--
         this.addEnemy(pick(waveMix(this.wave)))
       }
@@ -430,8 +440,7 @@ export class Engine {
     const c = this.center
     if (x === undefined || y === undefined) {
       const a = Math.random() * Math.PI * 2
-      // Just past the farthest corner, so nothing appears on screen
-      const d = Math.hypot(Math.max(c.x, this.w - c.x), Math.max(c.y, this.h - c.y)) + def.radius + 10
+      const d = this.edgeDistance(a) + def.radius + 10
       x = c.x + Math.cos(a) * d
       y = c.y + Math.sin(a) * d
     }
@@ -442,6 +451,16 @@ export class Engine {
     const hp = kind === "boss" ? def.hp + this.wave * 6 : def.hp
     const r = kind === "drone" ? def.radius * rand(0.8, 1.2) : def.radius
     this.enemies.push({ id: this.nextId++, kind, x, y, r, baseR: r, hp, maxHp: hp, speed: def.speed * speedUp * room * rand(0.9, 1.1), kx: 0, ky: 0, phase: Math.random() * 6, flash: 0, timer: 2, age: 0 })
+  }
+
+  /** How far the screen edge is from the turret in a direction */
+  private edgeDistance(a: number) {
+    const c = this.center
+    const cos = Math.cos(a)
+    const sin = Math.sin(a)
+    const tx = cos > 0 ? (this.w - c.x) / cos : cos < 0 ? -c.x / cos : Infinity
+    const ty = sin > 0 ? (this.h - c.y) / sin : sin < 0 ? -c.y / sin : Infinity
+    return Math.min(tx, ty)
   }
 
   // ---------- Combat ----------
