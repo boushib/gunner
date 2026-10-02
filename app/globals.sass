@@ -17,7 +17,8 @@ html
 
 body
   min-height: 100vh
-  font-family: var(--font-mono), monospace
+  font-family: var(--font-sans), system-ui, sans-serif
+  -webkit-font-smoothing: antialiased
   color: var(--text)
   font-size: 16px
   line-height: 1.5
@@ -29,6 +30,10 @@ a
 
 button
   font: inherit
+
+h1, h2, h3, strong, dd
+  font-family: var(--font-display), var(--font-sans), sans-serif
+  letter-spacing: -.01em
 
 :focus-visible
   outline: 2px solid var(--color-primary)

@@ -52,7 +52,7 @@ export const PowerIcon = ({ kind, size = 40 }: { kind: PowerKind; size?: number 
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden>
       <circle cx="20" cy="20" r="16" fill={COLORS.surface} stroke={def.color} strokeWidth="3" />
-      <text x="20" y="21" textAnchor="middle" dominantBaseline="middle" fill={def.color} fontSize="15" fontWeight="700" fontFamily="var(--font-mono), monospace">
+      <text x="20" y="21" textAnchor="middle" dominantBaseline="middle" fill={def.color} fontSize="15" fontWeight="700" fontFamily="var(--font-display), sans-serif">
         {def.glyph}
       </text>
     </svg>
