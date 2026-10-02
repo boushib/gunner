@@ -1,17 +1,12 @@
 # Gunner
 
-Gunner is a gunner game written in TypeScript.
+Gunner is an arcade shooter written in TypeScript with Next.js.
 
-## Dev Environment
+## Getting started
 
-Run the app in development mode.
-
-```text
-pnpm run dev
+```bash
+pnpm install
+pnpm dev
 ```
 
-Builds the app for production
-
-```text
-pnpm run build
-```
+Open [http://localhost:3000](http://localhost:3000).
