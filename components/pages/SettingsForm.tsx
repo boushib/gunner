@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { resetAll, settingsStore, type Settings } from "@/lib/save"
+import { useEffect, useState } from "react"
+import { ensureUsername, renameUser, resetAll, settingsStore, type Settings } from "@/lib/save"
+import { cleanUsername, isValidUsername } from "@/lib/usernames"
 import { playSound } from "@/lib/sound"
 import styles from "./Pages.module.sass"
 
@@ -15,15 +16,25 @@ const SettingsForm = () => {
   const [confirming, setConfirming] = useState(false)
   const [cleared, setCleared] = useState(false)
   const update = (patch: Partial<Settings>) => settingsStore.set((prev) => ({ ...prev, ...patch }))
+  // The username is edited as a draft and saved when you leave the field
+  const [name, setName] = useState(s.name)
+  const [saved, setSaved] = useState(s.name)
+  if (saved !== s.name) {
+    setSaved(s.name)
+    setName(s.name)
+  }
+  useEffect(() => {
+    ensureUsername()
+  }, [])
 
   return (
     <div className={styles.form}>
       <label className={styles.row}>
         <span>
-          Player name
-          <small>Shown on the leaderboard</small>
+          Username
+          <small>{isValidUsername(name) ? "Shown on the leaderboard" : "3 to 16 letters, numbers, _ or -"}</small>
         </span>
-        <input type="text" value={s.name} maxLength={16} onChange={(e) => update({ name: e.target.value })} onBlur={() => !s.name.trim() && update({ name: "Player" })} />
+        <input type="text" value={name} maxLength={16} onChange={(e) => setName(cleanUsername(e.target.value))} onBlur={() => (isValidUsername(name) ? renameUser(name) : setName(s.name))} />
       </label>
 
       <div className={styles.row}>

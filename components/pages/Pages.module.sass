@@ -80,66 +80,6 @@
   b
     color: var(--text)
 
-// Leaderboard
-.tabs
-  display: flex
-  gap: 6px
-  margin-bottom: 16px
-
-  button
-    flex: 0 1 auto
-    min-width: 0
-    padding: 9px 16px
-    border: 1px solid var(--line)
-    border-radius: 10px
-    color: var(--text-2)
-    font-weight: 700
-    background: none
-    cursor: pointer
-
-    &:hover
-      color: var(--text)
-
-  .tabOn
-    border-color: var(--color-primary)
-    color: var(--text)
-
-.tableWrap
-  overflow-x: auto
-  border: 1px solid var(--line)
-  border-radius: 16px
-
-.table
-  width: 100%
-  border-collapse: collapse
-  font-size: 14px
-
-  th, td
-    padding: 13px 16px
-    text-align: left
-    white-space: nowrap
-
-  th
-    color: var(--text-3)
-    font-size: 12px
-    font-weight: 400
-    text-transform: uppercase
-    letter-spacing: .06em
-    background-color: var(--color-accent)
-
-  tbody tr
-    border-top: 1px solid var(--line)
-
-  .num
-    text-align: right
-
-.rank
-  color: var(--text-3)
-
-.top
-  color: var(--color-primary)
-  font-weight: 700
-
 // Stats
 .statGrid
   display: grid
@@ -347,10 +287,6 @@
     gap: 8px
 
 @media (max-width: 520px)
-  .tabs button
-    flex: 1
-    padding-inline: 8px
-
   .row
     flex-wrap: wrap
 

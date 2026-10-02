@@ -1,0 +1,282 @@
+.avatar
+  display: inline-grid
+  flex-shrink: 0
+  place-items: center
+  border-radius: 50%
+  color: rgba(22, 27, 40, .85)
+  font-family: var(--font-display), sans-serif
+  font-weight: 700
+  letter-spacing: 0
+
+// Your username
+.you
+  position: relative
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  gap: 12px
+  margin-bottom: 22px
+  padding: 12px 16px
+  border: 1px solid var(--line)
+  border-radius: 16px
+  background-color: var(--color-accent)
+
+  > span
+    color: var(--text-2)
+
+  strong
+    color: var(--text)
+
+  button
+    display: inline-flex
+    align-items: center
+    gap: 6px
+    margin-left: auto
+    padding: 8px 12px
+    border: 1px solid var(--line)
+    border-radius: 10px
+    color: var(--text-2)
+    background: none
+    cursor: pointer
+
+    &:hover:not(:disabled)
+      border-color: var(--text-3)
+      color: var(--text)
+
+    &:disabled
+      opacity: .4
+      cursor: default
+
+    & + button
+      margin-left: 0
+
+  input
+    flex: 1
+    min-width: 0
+    max-width: 260px
+    padding: 9px 12px
+    border: 1px solid var(--color-primary)
+    border-radius: 10px
+    color: var(--text)
+    font: inherit
+    background-color: var(--color-bg)
+    outline: none
+
+  small
+    flex-basis: 100%
+    color: var(--text-3)
+    font-size: 13px
+
+// Mode tabs
+.tabs
+  display: flex
+  gap: 6px
+  margin-bottom: 20px
+
+  button
+    display: inline-flex
+    flex: 0 1 auto
+    align-items: center
+    gap: 8px
+    min-width: 0
+    padding: 9px 16px
+    border: 1px solid var(--line)
+    border-radius: 10px
+    color: var(--text-2)
+    font-weight: 700
+    background: none
+    cursor: pointer
+
+    &:hover
+      color: var(--text)
+
+  em
+    padding: 1px 7px
+    border-radius: 999px
+    color: var(--text-3)
+    font-size: 12px
+    font-style: normal
+    background-color: var(--color-accent)
+
+  .tabOn
+    border-color: var(--color-primary)
+    color: var(--text)
+
+// Podium: places 2, 1, 3
+.podium
+  display: grid
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+  align-items: end
+  gap: 14px
+  margin-bottom: 18px
+
+.step
+  --place: var(--line)
+  display: flex
+  flex-direction: column
+  align-items: center
+  gap: 8px
+  padding: 22px 16px 18px
+  border: 1px solid var(--line)
+  border-top: 4px solid var(--place)
+  border-radius: 18px
+  text-align: center
+  background-color: var(--color-accent)
+
+.gold
+  --place: #f9c74f
+  padding-block: 30px 24px
+
+  .points
+    font-size: 40px
+
+.silver
+  --place: #c0c7d6
+
+.bronze
+  --place: #d08c60
+
+.empty
+  min-height: 220px
+  border-style: dashed
+  border-top-style: solid
+  opacity: .4
+
+.badge
+  display: inline-flex
+  align-items: center
+  gap: 6px
+  padding: 4px 12px
+  border-radius: 999px
+  color: rgba(22, 27, 40, .9)
+  font-size: 13px
+  font-weight: 800
+  background-color: var(--place)
+
+.name
+  max-width: 100%
+  overflow: hidden
+  font-size: 18px
+  text-overflow: ellipsis
+  white-space: nowrap
+
+.points
+  color: var(--place)
+  font-family: var(--font-display), sans-serif
+  font-size: 32px
+  font-weight: 700
+  line-height: 1.1
+  font-variant-numeric: tabular-nums
+
+.details
+  display: flex
+  justify-content: center
+  gap: 18px
+  margin-top: 4px
+
+  dt
+    color: var(--text-3)
+    font-size: 12px
+
+  dd
+    font-size: 15px
+
+.date
+  color: var(--text-3)
+  font-size: 12px
+
+// Places 4 to 10
+.list
+  display: flex
+  flex-direction: column
+  gap: 8px
+  list-style: none
+
+  li
+    display: grid
+    grid-template-columns: 32px 32px minmax(0, 1fr) auto auto
+    align-items: center
+    gap: 14px
+    padding: 12px 16px
+    border: 1px solid var(--line)
+    border-radius: 14px
+    background-color: var(--color-accent)
+
+.rank
+  color: var(--text-3)
+  font-family: var(--font-display), sans-serif
+  font-weight: 700
+  text-align: center
+
+.rowName
+  display: flex
+  flex-direction: column
+  min-width: 0
+
+  strong
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+
+  small
+    color: var(--text-3)
+    font-size: 12px
+
+.stat
+  color: var(--text-2)
+  font-size: 13px
+  white-space: nowrap
+
+.rowScore
+  min-width: 80px
+  font-family: var(--font-display), sans-serif
+  font-size: 18px
+  font-weight: 700
+  text-align: right
+  font-variant-numeric: tabular-nums
+
+@media (max-width: 760px)
+  .podium
+    grid-template-columns: 1fr
+
+  // On phones the places stack in order
+  .gold
+    order: -1
+
+  .empty
+    display: none
+
+  // Second and third shrink to a single line
+  .silver, .bronze
+    display: grid
+    grid-template-columns: auto auto minmax(0, 1fr) auto
+    gap: 12px
+    padding: 14px 16px
+    text-align: left
+
+    .details, .date
+      display: none
+
+    .name
+      font-size: 16px
+
+    .points
+      font-size: 22px
+
+    // Overrides the podium size set inline
+    .avatar
+      width: 34px !important
+      height: 34px !important
+      font-size: 14px !important
+
+  .list li
+    grid-template-columns: 24px 32px minmax(0, 1fr) auto
+
+  .stat
+    display: none
+
+@media (max-width: 520px)
+  .tabs button
+    flex: 1
+    justify-content: center
+    padding-inline: 8px

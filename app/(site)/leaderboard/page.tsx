@@ -9,7 +9,7 @@ export default function LeaderboardPage() {
     <div className="container">
       <header className={site.pageHead}>
         <h1>Leaderboard</h1>
-        <p>Your ten best games in each mode. Scores are saved in this browser, under the player name from Settings.</p>
+        <p>The ten best games in each mode on this device, with the top three on the podium.</p>
       </header>
       <section className={site.section}>
         <Leaderboard />

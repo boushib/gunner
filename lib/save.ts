@@ -4,13 +4,14 @@ import { ACHIEVEMENTS } from "./achievements"
 import type { EnemyKind, Mode } from "./game/config"
 import type { RunStats } from "./game/engine"
 import { createStore, isObject } from "./store"
+import { cleanUsername, isValidUsername, randomUsername } from "./usernames"
 
 export type Settings = { name: string; volume: number; muted: boolean; shake: boolean; particles: "high" | "low" }
 
 export const settingsStore = createStore<Settings>("gunner:settings", { name: "Player", volume: 0.6, muted: false, shake: true, particles: "high" }, (raw) => {
   if (!isObject(raw)) return null
   return {
-    name: typeof raw.name === "string" && raw.name.trim() ? raw.name.slice(0, 16) : "Player",
+    name: typeof raw.name === "string" && isValidUsername(cleanUsername(raw.name)) ? cleanUsername(raw.name) : "Player",
     volume: typeof raw.volume === "number" ? Math.min(1, Math.max(0, raw.volume)) : 0.6,
     muted: raw.muted === true,
     shake: raw.shake !== false,
@@ -70,8 +71,35 @@ export const achievementsStore = createStore<Record<string, string>>("gunner:ach
   isObject(raw) ? (Object.fromEntries(Object.entries(raw).filter(([, v]) => typeof v === "string")) as Record<string, string>) : null
 )
 
+/**
+ * Gives this browser a real username the first time it's needed (instead of "Player"),
+ * and moves scores saved as "Player" over to it
+ */
+export const ensureUsername = () => {
+  const current = settingsStore.read().name
+  if (current !== "Player") return current
+  const name = randomUsername()
+  settingsStore.set((s) => ({ ...s, name }))
+  scoresStore.set((all) => {
+    const fix = (list: Score[]) => list.map((e) => (e.name === "Player" ? { ...e, name } : e))
+    return { classic: fix(all.classic), blitz: fix(all.blitz), hardcore: fix(all.hardcore) }
+  })
+  return name
+}
+
+/** Renames you everywhere: settings and the scores saved under your old name */
+export const renameUser = (name: string) => {
+  const old = settingsStore.read().name
+  settingsStore.set((s) => ({ ...s, name }))
+  scoresStore.set((all) => {
+    const fix = (list: Score[]) => list.map((e) => (e.name === old ? { ...e, name } : e))
+    return { classic: fix(all.classic), blitz: fix(all.blitz), hardcore: fix(all.hardcore) }
+  })
+}
+
 /** Saves a finished game everywhere; says whether it's a new best and what it unlocked */
 export const recordRun = (run: RunStats) => {
+  ensureUsername()
   const at = new Date().toISOString()
   const kills = Object.values(run.kills).reduce((a, b) => a + b, 0)
   const previous = scoresStore.read()[run.mode]
