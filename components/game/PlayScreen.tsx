@@ -10,7 +10,7 @@ import styles from "./Game.module.sass"
 
 /** The game wired to your settings, sound and saved scores */
 const PlayScreen = ({ mode }: { mode?: Mode }) => {
-  const settings = settingsStore.use()
+  const settings = settingsStore.useValue()
   const volume = settings.muted ? 0 : settings.volume
 
   return (

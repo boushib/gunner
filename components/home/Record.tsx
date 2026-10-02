@@ -8,9 +8,9 @@ import styles from "./Home.module.sass"
 
 /** Your best scores and progress, from this browser */
 const Record = () => {
-  const scores = scoresStore.use()
-  const life = lifetimeStore.use()
-  const unlocked = Object.keys(achievementsStore.use()).length
+  const scores = scoresStore.useValue()
+  const life = lifetimeStore.useValue()
+  const unlocked = Object.keys(achievementsStore.useValue()).length
 
   if (life.games === 0)
     return (

@@ -43,9 +43,9 @@ export const createStore = <T>(key: string, fallback: T, validate: (raw: unknown
     }
   }
 
-  const use = () => useSyncExternalStore(subscribe, read, () => fallback)
+  const useValue = () => useSyncExternalStore(subscribe, read, () => fallback)
 
-  return { read, set, use, reset: () => set(fallback) }
+  return { read, set, useValue, reset: () => set(fallback) }
 }
 
 export const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v)
