@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { EnemyIcon, PowerIcon } from "@/components/site/Icons"
-import { ENEMIES, MODES, POWERS, type EnemyKind, type Mode, type PowerKind } from "@/lib/game/config"
+import { ENEMIES, GUNS, MODES, POWERS, type EnemyKind, type Mode, type PowerKind } from "@/lib/game/config"
 import site from "@/components/site/Site.module.sass"
 import styles from "@/components/pages/Pages.module.sass"
 
@@ -52,6 +52,24 @@ export default function HowToPlay() {
             )
           })}
         </div>
+      </section>
+
+      <section className={site.section}>
+        <h2>Your gun</h2>
+        <p className={styles.lead}>Every kill fills your gun bar (a brute counts three, a Mothership fills it). A full bar upgrades your gun for the rest of the game. Getting hit knocks it down a level.</p>
+        <ol className={styles.guns}>
+          {GUNS.map((g, i) => (
+            <li key={g.name}>
+              <span className={styles.level}>Lv {i + 1}</span>
+              <strong>{g.name}</strong>
+              <span>
+                {g.rate} shots/s · {g.spread.length * g.offsets.length} {g.spread.length * g.offsets.length === 1 ? "bullet" : "bullets"}
+                {g.damage > 1 ? " · double damage" : ""}
+              </span>
+              <span className={styles.facts}>{Number.isFinite(g.next) ? `${g.next} kills to the next level` : "Top level"}</span>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section className={site.section}>

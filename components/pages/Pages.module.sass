@@ -35,6 +35,37 @@
   margin: -6px 0 16px
   color: var(--text-2)
 
+.guns
+  display: grid
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+  gap: 12px
+  list-style: none
+
+  li
+    display: flex
+    flex-direction: column
+    gap: 2px
+    padding: 16px 18px
+    border: 1px solid var(--line)
+    border-radius: 14px
+    font-size: 14px
+    color: var(--text-2)
+    background-color: var(--color-accent)
+
+  strong
+    color: var(--text)
+    font-size: 17px
+
+  .facts
+    margin-top: 4px
+
+.level
+  color: var(--color-primary)
+  font-size: 12px
+  font-weight: 700
+  text-transform: uppercase
+  letter-spacing: .06em
+
 .rules
   display: flex
   flex-direction: column
@@ -301,7 +332,7 @@
     background-color: #ef476f
 
 @media (max-width: 800px)
-  .controls
+  .controls, .guns
     grid-template-columns: 1fr
 
   .statGrid

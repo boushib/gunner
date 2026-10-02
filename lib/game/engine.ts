@@ -1,4 +1,4 @@
-import { BLITZ_SECONDS, COLORS, ENEMIES, MAX_LIVES, MODES, POWERS, TIMED, type EnemyKind, type Mode, type PowerKind } from "./config"
+import { BLITZ_SECONDS, COLORS, ENEMIES, GUNS, MAX_LIVES, MODES, POWERS, TIMED, type EnemyKind, type Mode, type PowerKind } from "./config"
 import { draw } from "./draw"
 
 export type Enemy = {
@@ -20,7 +20,7 @@ export type Enemy = {
   timer: number
   age: number
 }
-export type Bullet = { x: number; y: number; vx: number; vy: number; pierce: boolean; hit: Set<number> }
+export type Bullet = { x: number; y: number; vx: number; vy: number; r: number; damage: number; pierce: boolean; hit: Set<number> }
 export type Particle = { x: number; y: number; vx: number; vy: number; r: number; life: number; max: number; color: string }
 export type Floater = { x: number; y: number; text: string; life: number; color: string }
 export type Ring = { x: number; y: number; r: number; max: number; life: number; color: string }
@@ -40,6 +40,7 @@ export type Hud = {
   timeLeft: number | null
   powers: Array<{ kind: PowerKind; left: number }>
   shield: boolean
+  gun: { level: number; name: string; progress: number }
   boss: { hp: number; max: number } | null
   banner: string | null
   paused: boolean
@@ -59,6 +60,8 @@ export type RunStats = {
   bestNuke: number
   /** Waves cleared without getting hit */
   perfectWaves: number
+  /** Highest gun level reached */
+  bestGun: number
 }
 
 type Options = {
@@ -75,8 +78,6 @@ type Options = {
 
 const PLAYER_R = 20
 const BULLET_SPEED = 720
-const FIRE_RATE = 5
-const RAPID_RATE = 12
 const COMBO_WINDOW = 2.2
 
 const rand = (min: number, max: number) => min + Math.random() * (max - min)
@@ -128,6 +129,8 @@ export class Engine {
   timeLeft: number | null
   powers: Partial<Record<PowerKind, number>> = {}
   shield = false
+  gunLevel = 1
+  gunXp = 0
   invuln = 0
   shake = 0
   banner: { text: string; life: number } | null = null
@@ -171,6 +174,7 @@ export class Engine {
       livesLost: 0,
       bestNuke: 0,
       perfectWaves: 0,
+      bestGun: 1,
     }
     this.resize()
     this.listen()
@@ -293,7 +297,7 @@ export class Engine {
     this.cooldown -= real
     if (this.firing && !this.over && this.cooldown <= 0) {
       this.fire()
-      this.cooldown = 1 / (this.powers.rapid ? RAPID_RATE : FIRE_RATE) / (this.opts.autopilot ? 2.4 : 1)
+      this.cooldown = 1 / (this.gun.rate * (this.powers.rapid ? 2.2 : 1)) / (this.opts.autopilot ? 2.4 : 1)
     }
 
     this.spawn(real)
@@ -465,17 +469,45 @@ export class Engine {
 
   // ---------- Combat ----------
 
+  get gun() {
+    return GUNS[this.gunLevel - 1]
+  }
+
   private fire() {
-    const angles = this.powers.spread ? [-0.16, 0, 0.16] : [0]
+    const gun = this.gun
+    // The spread shot power-up adds a bullet on each side of whatever the gun fires
+    const angles = this.powers.spread ? [gun.spread[0] - 0.16, ...gun.spread, gun.spread[gun.spread.length - 1] + 0.16] : gun.spread
     const base = Math.atan2(this.aim.y, this.aim.x)
     const c = this.center
+    let fired = 0
     for (const off of angles) {
       const a = base + off
-      this.bullets.push({ x: c.x + Math.cos(a) * (PLAYER_R + 12), y: c.y + Math.sin(a) * (PLAYER_R + 12), vx: Math.cos(a) * BULLET_SPEED, vy: Math.sin(a) * BULLET_SPEED, pierce: !!this.powers.pierce, hit: new Set() })
+      for (const side of gun.offsets) {
+        const sx = -Math.sin(base) * side
+        const sy = Math.cos(base) * side
+        this.bullets.push({ x: c.x + sx + Math.cos(a) * (PLAYER_R + 12), y: c.y + sy + Math.sin(a) * (PLAYER_R + 12), vx: Math.cos(a) * BULLET_SPEED, vy: Math.sin(a) * BULLET_SPEED, r: gun.size, damage: gun.damage, pierce: !!this.powers.pierce, hit: new Set() })
+        fired++
+      }
     }
     if (!this.opts.autopilot) {
-      this.stats.shots++
+      this.stats.shots += fired
       this.opts.onSound?.("shoot")
+    }
+  }
+
+  /** Kills fill the gun bar; a full bar upgrades the gun */
+  private gainXp(amount: number) {
+    if (this.gunLevel >= GUNS.length) return
+    this.gunXp += amount
+    if (this.gunXp < this.gun.next) return
+    this.gunLevel++
+    this.gunXp = 0
+    this.stats.bestGun = Math.max(this.stats.bestGun, this.gunLevel)
+    const c = this.center
+    this.rings.push({ x: c.x, y: c.y, r: PLAYER_R, max: 120, life: 0.6, color: COLORS.primary })
+    if (!this.opts.autopilot) {
+      this.floaters.push({ x: c.x, y: c.y - 46, text: `Gun up: ${this.gun.name}`, life: 1.6, color: COLORS.primary })
+      this.opts.onSound?.("power")
     }
   }
 
@@ -493,10 +525,10 @@ export class Engine {
     for (const b of this.bullets) {
       for (const e of this.enemies) {
         if (e.hp <= 0 || b.hit.has(e.id)) continue
-        if (Math.hypot(b.x - e.x, b.y - e.y) > e.r + 4) continue
+        if (Math.hypot(b.x - e.x, b.y - e.y) > e.r + b.r) continue
         b.hit.add(e.id)
         if (!this.opts.autopilot) this.stats.hits++
-        this.damage(e, 1, b)
+        this.damage(e, b.damage, b)
         if (!b.pierce) {
           b.x = -999
           break
@@ -544,6 +576,7 @@ export class Engine {
     const def = ENEMIES[e.kind]
     this.explode(e.x, e.y, def.color, e.r)
     if (e.kind === "splitter") for (let i = 0; i < 3; i++) this.addSplit(e, i)
+    this.gainXp(e.kind === "boss" ? Infinity : e.kind === "brute" ? 3 : 1)
     if (this.opts.autopilot) {
       if (Math.random() < 0.06) this.drop(e.x, e.y)
       return
@@ -599,6 +632,11 @@ export class Engine {
     }
     this.invuln = 1.6
     this.stats.livesLost++
+    if (this.gunLevel > 1) {
+      this.gunLevel--
+      this.floaters.push({ x: c.x, y: c.y + 46, text: `Gun down: ${this.gun.name}`, life: 1.4, color: COLORS.player })
+    }
+    this.gunXp = 0
     this.opts.onSound?.("hurt")
     if (this.timeLeft !== null) {
       this.timeLeft = Math.max(0, this.timeLeft - 5)
@@ -736,6 +774,7 @@ export class Engine {
       timeLeft: this.timeLeft === null ? null : Math.ceil(this.timeLeft),
       powers: TIMED.filter((k) => this.powers[k] !== undefined).map((k) => ({ kind: k, left: Math.ceil(this.powers[k]!) })),
       shield: this.shield,
+      gun: { level: this.gunLevel, name: this.gun.name, progress: Number.isFinite(this.gun.next) ? Math.round((this.gunXp / this.gun.next) * 20) / 20 : 1 },
       boss: boss ? { hp: boss.hp, max: boss.maxHp } : null,
       banner: this.banner?.text ?? null,
       paused: this.paused,

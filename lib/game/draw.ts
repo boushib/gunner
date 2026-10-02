@@ -139,7 +139,7 @@ export const draw = (ctx: CanvasRenderingContext2D, g: Engine) => {
     ctx.stroke()
     ctx.globalAlpha = 1
     ctx.fillStyle = color
-    circle(ctx, b.x, b.y, 4)
+    circle(ctx, b.x, b.y, b.r)
     ctx.fill()
   }
 
@@ -149,10 +149,20 @@ export const draw = (ctx: CanvasRenderingContext2D, g: Engine) => {
     ctx.save()
     ctx.translate(c.x, c.y)
     ctx.rotate(a)
+    // One barrel per bullet direction, wider for heavier rounds
+    const gun = g.gun
     ctx.fillStyle = COLORS.player
-    ctx.beginPath()
-    ctx.roundRect(8, -5, 26, 10, 4)
-    ctx.fill()
+    const width = gun.damage > 1 ? 12 : 10
+    for (const off of gun.spread.length > 1 ? gun.spread : [0]) {
+      for (const side of gun.offsets) {
+        ctx.save()
+        ctx.rotate(off)
+        ctx.beginPath()
+        ctx.roundRect(8, side - width / 2, gun.spread.length > 3 ? 24 : 28, width, 4)
+        ctx.fill()
+        ctx.restore()
+      }
+    }
     ctx.restore()
     ctx.fillStyle = COLORS.player
     circle(ctx, c.x, c.y, 20)

@@ -17,6 +17,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: "sharpshooter", name: "Sharpshooter", blurb: "Finish a game with 75% accuracy or better (50 shots or more).", check: (r) => r.shots >= 50 && r.hits / r.shots >= 0.75 },
   { id: "combo-25", name: "On a roll", blurb: "Reach a 25 combo.", check: (r) => r.bestCombo >= 25 },
   { id: "combo-60", name: "Unstoppable", blurb: "Reach a 60 combo.", check: (r) => r.bestCombo >= 60 },
+  { id: "gun-max", name: "Fully loaded", blurb: "Upgrade your gun to the Storm cannon.", check: (r) => r.bestGun >= 6 },
   { id: "boss", name: "Mothership down", blurb: "Destroy a Mothership.", check: (r) => r.kills.boss >= 1 },
   { id: "wave-10", name: "Holding the line", blurb: "Reach wave 10 in Classic.", check: (r) => r.mode === "classic" && r.wave >= 10 },
   { id: "wave-20", name: "Last turret standing", blurb: "Reach wave 20 in Classic.", check: (r) => r.mode === "classic" && r.wave >= 20 },

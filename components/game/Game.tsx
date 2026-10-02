@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Heart, Pause, Play, RotateCcw, Shield } from "lucide-react"
-import { MODES, POWERS, type Mode } from "@/lib/game/config"
+import { GUNS, MODES, POWERS, type Mode } from "@/lib/game/config"
 import { Engine, type Hud, type RunStats, type Settings, type Sound } from "@/lib/game/engine"
 import styles from "./Game.module.sass"
 
@@ -80,6 +80,14 @@ const Game = ({ settings, initialMode, onSound, onFinish, menuExtra }: Props) =>
           <div className={styles.topLeft}>
             <strong className={styles.score}>{hud.score.toLocaleString("en-US")}</strong>
             <span className={styles.meta}>{hud.timeLeft !== null ? <b className={hud.timeLeft <= 10 ? styles.urgent : ""}>{clock(hud.timeLeft)}</b> : `Wave ${hud.wave}`}</span>
+            <span className={styles.gun} title={`Gun level ${hud.gun.level} of ${GUNS.length}`}>
+              <span>
+                {hud.gun.name} <b>Lv {hud.gun.level}</b>
+              </span>
+              <i>
+                <i style={{ width: `${hud.gun.progress * 100}%` }} />
+              </i>
+            </span>
             {hud.combo >= 2 && (
               <span className={styles.combo}>
                 {hud.combo} combo{hud.multiplier > 1 && <b> ×{hud.multiplier}</b>}
@@ -181,6 +189,10 @@ const Game = ({ settings, initialMode, onSound, onFinish, menuExtra }: Props) =>
               <div>
                 <dt>Accuracy</dt>
                 <dd>{phase.stats.shots ? Math.round((phase.stats.hits / phase.stats.shots) * 100) : 0}%</dd>
+              </div>
+              <div>
+                <dt>Best gun</dt>
+                <dd>Lv {phase.stats.bestGun}</dd>
               </div>
               <div>
                 <dt>Best combo</dt>
