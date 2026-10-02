@@ -1,5 +1,7 @@
-import Game from "@/components/Game"
+"use client"
+
+import Game from "@/components/game/Game"
 
 export default function Home() {
-  return <Game />
+  return <Game settings={{ shake: true, particles: "high" }} />
 }
