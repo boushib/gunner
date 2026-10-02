@@ -350,3 +350,24 @@
   .boss
     top: 70px
     width: calc(100% - 32px)
+
+.menuLinks
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
+  gap: 6px 20px
+  margin-top: 10px
+  font-size: 14px
+
+  a, button
+    display: inline-flex
+    align-items: center
+    gap: 6px
+    padding: 4px 0
+    border: 0
+    color: var(--text-2)
+    background: none
+    cursor: pointer
+
+    &:hover
+      color: var(--text)
