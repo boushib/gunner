@@ -1,15 +1,18 @@
 "use client"
 
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { Volume2, VolumeX } from "lucide-react"
-import type { Mode } from "@/lib/game/config"
+import { MODES, type Mode } from "@/lib/game/config"
 import { recordRun, settingsStore } from "@/lib/save"
 import { playSound } from "@/lib/sound"
 import Game from "./Game"
 import styles from "./Game.module.sass"
 
 /** The game wired to your settings, sound and saved scores */
-const PlayScreen = ({ mode }: { mode?: Mode }) => {
+const PlayScreen = () => {
+  const param = useSearchParams().get("mode")
+  const mode = param && param in MODES ? (param as Mode) : undefined
   const settings = settingsStore.useValue()
   const volume = settings.muted ? 0 : settings.volume
 
