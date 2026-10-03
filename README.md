@@ -4,6 +4,8 @@
 
 **An arcade shooter for the browser: you're the gunner in the middle of the screen and everything flies at you. Aim, hold to fire, upgrade your gun and survive as long as you can.**
 
+**[▶ Play it live](https://gunner-32o8.onrender.com)**
+
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
